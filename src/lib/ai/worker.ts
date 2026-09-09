@@ -2,6 +2,8 @@ import { pipeline, env } from '@xenova/transformers';
 
 // Skip local model check since we are running in the browser
 env.allowLocalModels = false;
+// Configure WASM to prevent memory spikes
+env.backends.onnx.wasm.numThreads = 1;
 
 // We'll use a zero-shot image classification model
 // It allows us to pass an image and a set of candidate labels.
@@ -85,6 +87,7 @@ self.addEventListener('message', async (event) => {
         });
 
     } catch (error: any) {
-        self.postMessage({ status: 'error', error: error.message });
+        console.error("Worker Execution Error:", error);
+        self.postMessage({ status: 'error', error: error?.message || String(error) });
     }
 });

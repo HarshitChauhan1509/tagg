@@ -28,9 +28,18 @@ export default function ScanPage() {
     });
 
     w.addEventListener('message', (e) => {
-      const { status, message, result, error } = e.data;
+      const { status, message, result, error, progress } = e.data;
       if (status === 'progress_msg') {
         setScanMessage(message);
+      } else if (status === 'progress') {
+        // progress is an object like { status: 'progress', name: '...', progress: 50 }
+        if (progress.status === 'progress') {
+          setScanMessage(`Downloading AI... ${progress.progress ? Math.round(progress.progress) : 0}%`);
+        } else if (progress.status === 'ready') {
+          setScanMessage("AI model ready!");
+        } else if (progress.status === 'initiate') {
+          setScanMessage("Initializing AI weights...");
+        }
       } else if (status === 'complete') {
         setScannedData(result);
         setIsScanning(false);
@@ -39,6 +48,12 @@ export default function ScanPage() {
         setScanMessage("Analysis failed. Please try again.");
         setIsScanning(false);
       }
+    });
+
+    w.addEventListener('error', (e) => {
+      console.error("Worker Global Error:", e);
+      setScanMessage("Worker crashed. Check console.");
+      setIsScanning(false);
     });
 
     setWorker(w);
