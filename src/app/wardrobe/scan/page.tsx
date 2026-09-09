@@ -68,17 +68,29 @@ export default function ScanPage() {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = (styleDirectly = false) => {
     if (isScanning) return; // Prevent double clicks
     
     if (image && scannedData && user) {
+      const newItemId = Date.now().toString();
       addClothingItem({
         ...scannedData,
-        id: Date.now().toString(),
+        id: newItemId,
         userId: user.id,
         image,
         createdAt: Date.now(),
       } as ClothingItem);
+      
+      if (styleDirectly) {
+        // Smart occasion default based on formality
+        let autoOccasion = "casual";
+        if (scannedData.formality && scannedData.formality > 7) autoOccasion = "event";
+        else if (scannedData.formality && scannedData.formality > 5) autoOccasion = "dinner";
+        else if (scannedData.style === 'night_out') autoOccasion = "night_out";
+        
+        router.push(`/going-out/recommendation?occasion=${autoOccasion}&anchorId=${newItemId}`);
+        return;
+      }
       
       if (uploadQueue.length > 0) {
         // Process next item
@@ -204,9 +216,17 @@ export default function ScanPage() {
             </div>
           </div>
 
-          <div className="mt-12 mb-4">
+          <div className="mt-12 mb-4 flex flex-col gap-3">
             <button
-              onClick={handleSave}
+              onClick={() => handleSave(true)}
+              disabled={isScanning}
+              className="w-full bg-brand-accent text-brand-dark neo-border neo-shadow rounded-full py-4 text-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Sparkles className="w-6 h-6" />
+              {isScanning ? 'Processing...' : 'Style this Item'}
+            </button>
+            <button
+              onClick={() => handleSave(false)}
               disabled={isScanning}
               className="w-full bg-brand-dark text-brand-light neo-border neo-shadow rounded-full py-4 text-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >

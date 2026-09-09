@@ -44,7 +44,8 @@ function getRandom<T>(array: T[]): T | undefined {
 export function generateRecommendation(
   wardrobe: ClothingItem[],
   occasion: Occasion,
-  user: UserProfile
+  user: UserProfile,
+  anchorId?: string
 ): OutfitRecommendation | null {
   if (wardrobe.length === 0) return null;
 
@@ -76,59 +77,102 @@ export function generateRecommendation(
     ['blazer', 'jacket', 'coat', 'outerwear'].includes(i.type.toLowerCase())
   );
 
-  // If we don't have basic items, just return null
-  if (tops.length === 0 || bottoms.length === 0) return null;
+  let anchorItem: ClothingItem | undefined;
+  if (anchorId) {
+    anchorItem = wardrobe.find(i => i.id === anchorId);
+  }
+
+  // Determine anchor role
+  let isAnchorTop = false;
+  let isAnchorBottom = false;
+  let isAnchorOuter = false;
+  let isAnchorShoe = false;
+
+  if (anchorItem) {
+    if (tops.some(t => t.id === anchorItem!.id)) isAnchorTop = true;
+    else if (bottoms.some(b => b.id === anchorItem!.id)) isAnchorBottom = true;
+    else if (outers.some(o => o.id === anchorItem!.id)) isAnchorOuter = true;
+    else if (shoes.some(s => s.id === anchorItem!.id)) isAnchorShoe = true;
+    else isAnchorTop = true; // fallback
+  }
 
   // Find valid tops
-  const validTops = tops.filter(t => t.formality >= targetFormality.min && t.formality <= targetFormality.max);
-  const selectedTop = getRandom(validTops.length > 0 ? validTops : tops)!;
+  let selectedTop: ClothingItem;
+  if (isAnchorTop) {
+    selectedTop = anchorItem!;
+  } else {
+    const validTops = tops.filter(t => t.formality >= targetFormality.min && t.formality <= targetFormality.max && t.id !== anchorItem?.id);
+    selectedTop = getRandom(validTops.length > 0 ? validTops : tops.filter(t => t.id !== anchorItem?.id)) || tops[0];
+  }
+
+  if (!selectedTop) return null;
   
-  // Find valid bottoms (ensure not the same physical item as top)
-  const validBottoms = bottoms.filter(b => 
-    b.id !== selectedTop.id &&
-    (b.formality >= targetFormality.min && b.formality <= targetFormality.max) && 
-    isColorCompatible(selectedTop.color, b.color)
-  );
-  const fallbackBottoms = bottoms.filter(b => b.id !== selectedTop.id);
-  const selectedBottom = getRandom(validBottoms.length > 0 ? validBottoms : fallbackBottoms)!;
+  // Find valid bottoms
+  let selectedBottom: ClothingItem;
+  if (isAnchorBottom) {
+    selectedBottom = anchorItem!;
+  } else {
+    const validBottoms = bottoms.filter(b => 
+      b.id !== selectedTop.id &&
+      b.id !== anchorItem?.id &&
+      (b.formality >= targetFormality.min && b.formality <= targetFormality.max) && 
+      isColorCompatible(selectedTop.color, b.color)
+    );
+    const fallbackBottoms = bottoms.filter(b => b.id !== selectedTop.id && b.id !== anchorItem?.id);
+    selectedBottom = getRandom(validBottoms.length > 0 ? validBottoms : fallbackBottoms) || bottoms[0];
+  }
+
+  if (!selectedBottom) return null;
 
   // Optional: Outerwear
   let selectedOuter: ClothingItem | undefined;
-  if (outers.length > 0 && ['night_out', 'dinner', 'date', 'event'].includes(occasion)) {
+  if (isAnchorOuter) {
+    selectedOuter = anchorItem!;
+  } else if (outers.length > 0 && ['night_out', 'dinner', 'date', 'event'].includes(occasion)) {
     const validOuters = outers.filter(o => 
       o.id !== selectedTop.id && 
       o.id !== selectedBottom?.id && 
+      o.id !== anchorItem?.id &&
       isColorCompatible(o.color, selectedTop.color)
     );
-    const fallbackOuters = outers.filter(o => o.id !== selectedTop.id && o.id !== selectedBottom?.id);
+    const fallbackOuters = outers.filter(o => o.id !== selectedTop.id && o.id !== selectedBottom?.id && o.id !== anchorItem?.id);
     selectedOuter = getRandom(validOuters.length > 0 ? validOuters : fallbackOuters);
   }
 
   // Shoes
   let selectedShoes: ClothingItem | undefined;
-  if (shoes.length > 0) {
+  if (isAnchorShoe) {
+    selectedShoes = anchorItem!;
+  } else if (shoes.length > 0) {
     const validShoes = shoes.filter(s => 
       s.id !== selectedTop.id && 
       s.id !== selectedBottom?.id && 
       s.id !== selectedOuter?.id && 
+      s.id !== anchorItem?.id &&
       s.formality >= targetFormality.min
     );
     const fallbackShoes = shoes.filter(s => 
       s.id !== selectedTop.id && 
       s.id !== selectedBottom?.id && 
-      s.id !== selectedOuter?.id
+      s.id !== selectedOuter?.id &&
+      s.id !== anchorItem?.id
     );
     selectedShoes = getRandom(validShoes.length > 0 ? validShoes : fallbackShoes);
   }
 
   // Generate Reasoning dynamically based on the AI metadata
-  let reasoningText = `This ${selectedTop.color} ${selectedTop.type} pairs perfectly with the ${selectedBottom.color} ${selectedBottom.type} for a ${occasion.replace('_', ' ')} setting.`;
+  let reasoningText = '';
+  if (anchorItem) {
+    reasoningText += `We built this look around your new ${anchorItem.color} ${anchorItem.type}. `;
+  }
   
-  if (selectedOuter) {
+  reasoningText += `This ${selectedTop.color} ${selectedTop.type} pairs perfectly with the ${selectedBottom.color} ${selectedBottom.type} for a ${occasion.replace('_', ' ')} setting.`;
+  
+  if (selectedOuter && selectedOuter.id !== anchorItem?.id) {
     reasoningText += ` Adding the ${selectedOuter.color} ${selectedOuter.type} gives the outfit a sharper silhouette and elevates the formality.`;
   }
   
-  if (selectedShoes) {
+  if (selectedShoes && selectedShoes.id !== anchorItem?.id) {
     reasoningText += ` Finishing off with ${selectedShoes.color} ${selectedShoes.type} keeps the look grounded and ${selectedShoes.style}.`;
   }
 

@@ -10,6 +10,7 @@ import { ArrowLeft, Sparkles } from "lucide-react";
 function RecommendationContent() {
   const searchParams = useSearchParams();
   const occasion = searchParams.get('occasion') as Occasion;
+  const anchorId = searchParams.get('anchorId');
   const router = useRouter();
   
   const wardrobe = useAppStore(state => state.wardrobe);
@@ -25,7 +26,7 @@ function RecommendationContent() {
     if (user && wardrobe.length > 0 && occasion) {
       // Simulate AI thinking time for effect
       setTimeout(() => {
-        const result = generateRecommendation(wardrobe, occasion, user);
+        const result = generateRecommendation(wardrobe, occasion, user, anchorId || undefined);
         setRecommendation(result);
         setIsLoading(false);
       }, 1000);

@@ -55,7 +55,11 @@ export default function GoingOutPage() {
       <div className="mt-12 w-full pb-10 relative">
         <button
           disabled={!selected}
-          onClick={() => router.push(`/going-out/recommendation?occasion=${selected}`)}
+          onClick={() => {
+            const params = new URLSearchParams(window.location.search);
+            const anchorId = params.get('anchorId');
+            router.push(`/going-out/recommendation?occasion=${selected}${anchorId ? `&anchorId=${anchorId}` : ''}`);
+          }}
           className="w-full bg-brand-dark text-brand-light neo-border neo-shadow rounded-full py-4 text-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Generate Outfit
