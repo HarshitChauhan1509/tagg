@@ -19,6 +19,8 @@ export default function ScanPage() {
   const [uploadQueue, setUploadQueue] = useState<string[]>([]);
   const webcamRef = useRef<Webcam>(null);
 
+  const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
+
   const processImage = async (base64Img: string) => {
     setIsScanning(true);
     setScanMessage("Waking up AI...");
@@ -115,7 +117,7 @@ export default function ScanPage() {
         
         {/* Left Side: Image */}
         <div className="w-full md:w-1/2 flex flex-col">
-          <div className="flex justify-between items-center mb-6 md:hidden">
+          <div className="flex justify-between items-center mb-6 md:hidden px-6">
             <h1 className="font-serif text-3xl font-bold text-brand-dark">
               {uploadQueue.length > 0 ? `Review (${uploadQueue.length + 1} left)` : 'Review Item'}
             </h1>
@@ -134,14 +136,14 @@ export default function ScanPage() {
               <X className="w-6 h-6 text-neutral-500" />
             </button>
           </div>
-          <div className="rounded-3xl overflow-hidden aspect-[3/4] w-full neo-border neo-shadow bg-neutral-100 sticky top-4">
+          <div className="rounded-3xl overflow-hidden aspect-[3/4] w-full neo-border neo-shadow bg-neutral-100 sticky top-4 mx-auto max-w-sm md:max-w-none">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={image} alt="Scanned clothing" className="w-full h-full object-cover" />
           </div>
         </div>
 
         {/* Right Side: Form */}
-        <div className="w-full md:w-1/2 flex flex-col md:py-8">
+        <div className="w-full md:w-1/2 flex flex-col md:py-8 px-6 md:px-0">
           <div className="hidden md:flex justify-between items-center mb-10">
             <h1 className="font-serif text-4xl font-bold text-brand-dark">
               {uploadQueue.length > 0 ? `Review (${uploadQueue.length + 1} left)` : 'Review Item'}
@@ -255,7 +257,7 @@ export default function ScanPage() {
             audio={false}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
-            videoConstraints={{ facingMode: "environment" }}
+            videoConstraints={{ facingMode }}
             className="w-full h-full object-cover"
           />
         ) : (
@@ -310,12 +312,17 @@ export default function ScanPage() {
           
           <button 
             onClick={capture}
-            className="w-24 h-24 rounded-full border-[6px] border-white/80 flex items-center justify-center p-1 hover:scale-105 transition-transform"
+            className="w-24 h-24 rounded-full border-[6px] border-white/80 flex items-center justify-center p-1 hover:scale-105 transition-transform shrink-0"
           >
             <div className="w-full h-full bg-white rounded-full" />
           </button>
           
-          <div className="w-14 h-14" /> {/* Empty div for flex balance */}
+          <button 
+            onClick={() => setFacingMode(prev => prev === "environment" ? "user" : "environment")}
+            className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors border border-white/10"
+          >
+            <RefreshCcw className="w-6 h-6" />
+          </button>
         </div>
       )}
     </div>
