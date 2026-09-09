@@ -77,7 +77,7 @@ export default function WardrobePage() {
           </div>
 
           {/* Floating Action Button for Adding Items */}
-          <div className="fixed bottom-[100px] right-6 md:right-12 z-40">
+          <div className="fixed bottom-36 md:bottom-36 right-6 md:right-12 z-40">
             <button
               onClick={() => router.push("/wardrobe/scan")}
               className="w-16 h-16 bg-brand-accent text-brand-dark rounded-full neo-border neo-shadow flex items-center justify-center hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all"
