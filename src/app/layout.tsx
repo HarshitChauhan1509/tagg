@@ -26,14 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased min-h-screen flex items-center justify-center p-0 md:p-4`}>
-        <main className="w-full h-[100dvh] md:h-[90vh] md:max-h-[900px] max-w-md mx-auto relative overflow-hidden bg-background md:rounded-[3rem] md:neo-border md:neo-shadow flex flex-col shadow-2xl">
-          <Navigation />
-          <div className="flex-1 overflow-y-auto no-scrollbar pb-32 relative">
-            {children}
-          </div>
-          <BottomNav />
+      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased min-h-[100dvh] flex flex-col bg-background`}>
+        <Navigation />
+        <main className="w-full flex-1 max-w-7xl mx-auto relative flex flex-col pt-6 pb-32 px-4 md:px-8">
+          {children}
         </main>
+        <BottomNav />
       </body>
     </html>
   );

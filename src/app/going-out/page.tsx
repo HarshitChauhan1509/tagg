@@ -31,22 +31,22 @@ export default function GoingOutPage() {
           What's the <br /> occasion?
         </h1>
 
-        <div className="flex flex-col gap-3">
-          {OCCASIONS.map((occ, i) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+          {OCCASIONS.map((occasion, i) => (
             <motion.button
-              key={occ.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.05 }}
-              onClick={() => setSelected(occ.id)}
-              className={`flex items-center gap-4 px-6 py-4 rounded-2xl neo-border transition-all ${
-                selected === occ.id 
-                  ? 'bg-brand-accent text-brand-dark neo-shadow translate-y-[-2px]' 
-                  : 'bg-white hover:bg-neutral-50'
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.05 + 0.1 }}
+              key={occasion.id}
+              onClick={() => setSelected(occasion.id as any)}
+              className={`p-6 rounded-3xl neo-border transition-all flex flex-col items-center gap-3 ${
+                selected === occasion.id 
+                  ? 'bg-brand-dark text-brand-light neo-shadow translate-y-[-2px]' 
+                  : 'bg-white text-brand-dark hover:bg-neutral-50'
               }`}
             >
-              <span className="text-3xl">{occ.emoji}</span>
-              <span className="font-bold text-xl">{occ.label}</span>
+              <span className="text-3xl">{occasion.emoji}</span>
+              <span className="font-bold text-sm text-center">{occasion.label}</span>
             </motion.button>
           ))}
         </div>

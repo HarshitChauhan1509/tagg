@@ -9,7 +9,7 @@
 
 body {
   color: var(--foreground);
-  background: #E5E5E5; /* Darker gray for the desktop background outside the app */
+  background: var(--background);
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

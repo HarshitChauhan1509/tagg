@@ -26,7 +26,7 @@ export default function WardrobePage() {
             <Camera className="w-10 h-10 text-brand-dark" />
           </div>
           <h2 className="text-xl font-medium text-brand-dark mb-2">Your wardrobe is empty</h2>
-          <p className="text-neutral-500 mb-8 max-w-[250px]">
+          <p className="text-neutral-500 mb-8 max-w-[250px] md:max-w-md mx-auto">
             Scan your clothes with your camera to build your digital wardrobe.
           </p>
           <button 
@@ -37,7 +37,7 @@ export default function WardrobePage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-10 w-full">
           {wardrobe.map((item, i) => (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -50,11 +50,11 @@ export default function WardrobePage() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={item.image} alt={item.type} className="w-full h-full object-cover" />
               </div>
-              <div className="p-3 bg-white">
-                <p className="font-bold text-brand-dark capitalize truncate text-sm">
+              <div className="p-3 bg-white md:p-4">
+                <p className="font-bold text-brand-dark capitalize truncate text-sm md:text-base">
                   {item.color} {item.type}
                 </p>
-                <p className="text-xs text-neutral-500 capitalize mt-0.5 font-medium">
+                <p className="text-xs md:text-sm text-neutral-500 capitalize mt-0.5 font-medium">
                   {item.style} • {item.category}
                 </p>
               </div>
@@ -65,7 +65,7 @@ export default function WardrobePage() {
 
       {/* Fixed bottom action bar */}
       {wardrobe.length > 0 && (
-        <div className="absolute bottom-0 left-0 right-0 p-6 flex justify-center pointer-events-none z-50 bg-gradient-to-t from-background via-background/80 to-transparent pt-12">
+        <div className="fixed bottom-0 left-0 right-0 p-6 flex justify-center pointer-events-none z-50 bg-gradient-to-t from-background via-background/80 to-transparent pt-12 pb-24">
           <div className="max-w-md w-full flex gap-3 pointer-events-auto">
             <button
               onClick={() => router.push("/wardrobe/scan")}

@@ -16,6 +16,7 @@ export default function ScanPage() {
   const [isScanning, setIsScanning] = useState(false);
   const [scanMessage, setScanMessage] = useState("Initializing AI model...");
   const [scannedData, setScannedData] = useState<Partial<ClothingItem> | null>(null);
+  const [uploadQueue, setUploadQueue] = useState<string[]>([]);
   const workerRef = useRef<Worker | null>(null);
   const webcamRef = useRef<Webcam>(null);
 
@@ -80,16 +81,25 @@ export default function ScanPage() {
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setImage(base64);
-        processImage(base64);
-      };
-      reader.readAsDataURL(file);
-    }
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const promises = Array.from(files).map((file) => {
+      return new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(promises).then((base64Strings) => {
+      const first = base64Strings[0];
+      const rest = base64Strings.slice(1);
+      
+      setImage(first);
+      setUploadQueue(rest);
+      processImage(first);
+    });
   };
 
   const handleSave = () => {
@@ -101,7 +111,17 @@ export default function ScanPage() {
         image,
         createdAt: Date.now(),
       } as ClothingItem);
-      router.push("/wardrobe");
+      
+      if (uploadQueue.length > 0) {
+        // Process next item
+        const next = uploadQueue[0];
+        setUploadQueue(prev => prev.slice(1));
+        setImage(next);
+        setScannedData(null);
+        processImage(next);
+      } else {
+        router.push("/wardrobe");
+      }
     }
   };
 
@@ -111,10 +131,23 @@ export default function ScanPage() {
 
   if (scannedData && image) {
     return (
-      <div className="flex flex-col min-h-screen px-6 py-6 pb-24">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="font-serif text-3xl font-bold text-brand-dark">Review Item</h1>
-          <button onClick={() => { setImage(null); setScannedData(null); }} className="p-2">
+      <div className="flex flex-col min-h-[100dvh] px-6 py-6 pb-32 overflow-y-auto">
+        <div className="flex justify-between items-center mb-6 mt-4">
+          <h1 className="font-serif text-3xl font-bold text-brand-dark">
+            {uploadQueue.length > 0 ? `Review (${uploadQueue.length + 1} left)` : 'Review Item'}
+          </h1>
+          <button onClick={() => { 
+            if (uploadQueue.length > 0) {
+              const next = uploadQueue[0];
+              setUploadQueue(prev => prev.slice(1));
+              setImage(next);
+              setScannedData(null);
+              processImage(next);
+            } else {
+              setImage(null); 
+              setScannedData(null); 
+            }
+          }} className="p-2 bg-neutral-100 rounded-full">
             <X className="w-6 h-6 text-neutral-500" />
           </button>
         </div>
@@ -194,7 +227,7 @@ export default function ScanPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-black">
+    <div className="flex flex-col min-h-[100dvh] bg-black">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-50">
         <button onClick={() => router.back()} className="w-10 h-10 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white">
@@ -256,7 +289,7 @@ export default function ScanPage() {
         <div className="h-32 bg-black flex items-center justify-around px-8 pb-8 pt-4 z-50">
           <label className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors">
             <ImageIcon className="w-5 h-5" />
-            <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
+            <input type="file" multiple accept="image/*" className="hidden" onChange={handleFileUpload} />
           </label>
           
           <button 
