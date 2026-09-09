@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Webcam from "react-webcam";
 import { motion } from "framer-motion";
-import { Camera, X, Check, RefreshCcw, Image as ImageIcon } from "lucide-react";
+import { Camera, X, Check, RefreshCcw, Image as ImageIcon, Sparkles } from "lucide-react";
 import { useAppStore, ClothingItem } from "@/lib/store";
 
 export default function ScanPage() {
