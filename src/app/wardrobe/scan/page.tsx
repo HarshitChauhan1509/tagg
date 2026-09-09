@@ -16,8 +16,7 @@ export default function ScanPage() {
   const [isScanning, setIsScanning] = useState(false);
   const [scanMessage, setScanMessage] = useState("Initializing AI model...");
   const [scannedData, setScannedData] = useState<Partial<ClothingItem> | null>(null);
-  const [worker, setWorker] = useState<Worker | null>(null);
-
+  const workerRef = useRef<Worker | null>(null);
   const webcamRef = useRef<Webcam>(null);
 
   // Initialize Web Worker
@@ -32,7 +31,6 @@ export default function ScanPage() {
       if (status === 'progress_msg') {
         setScanMessage(message);
       } else if (status === 'progress') {
-        // progress is an object like { status: 'progress', name: '...', progress: 50 }
         if (progress.status === 'progress') {
           setScanMessage(`Downloading AI... ${progress.progress ? Math.round(progress.progress) : 0}%`);
         } else if (progress.status === 'ready') {
@@ -56,24 +54,28 @@ export default function ScanPage() {
       setIsScanning(false);
     });
 
-    setWorker(w);
+    workerRef.current = w;
 
-    return () => w.terminate();
+    return () => {
+      w.terminate();
+    };
   }, []);
-
-  const capture = useCallback(() => {
-    const imageSrc = webcamRef.current?.getScreenshot();
-    if (imageSrc) {
-      setImage(imageSrc);
-      processImage(imageSrc);
-    }
-  }, [webcamRef]);
 
   const processImage = (base64Img: string) => {
     setIsScanning(true);
     setScanMessage("Waking up AI...");
-    if (worker) {
-      worker.postMessage({ imageBase64: base64Img });
+    if (workerRef.current) {
+      workerRef.current.postMessage({ imageBase64: base64Img });
+    } else {
+      setScanMessage("AI Worker not initialized. Please refresh.");
+    }
+  };
+
+  const capture = () => {
+    const imageSrc = webcamRef.current?.getScreenshot();
+    if (imageSrc) {
+      setImage(imageSrc);
+      processImage(imageSrc);
     }
   };
 
