@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
-  title: "Fashion AI | What are you wearing tonight?",
+  title: "tagg | What are you wearing tonight?",
   description: "Your wardrobe, understood by AI.",
 };
 

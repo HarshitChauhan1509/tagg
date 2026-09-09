@@ -22,11 +22,11 @@ export function Navigation() {
   return (
     <header className="px-6 py-4 flex items-center justify-center sticky top-0 bg-background/80 glass z-40">
       <div 
-        className="font-serif text-2xl font-bold cursor-pointer tracking-tight flex items-center"
+        className="font-serif text-3xl font-bold cursor-pointer tracking-tight flex items-center"
         onClick={() => router.push("/wardrobe")}
       >
-        <span className="text-brand-dark">fashion</span>
-        <span className="text-brand-accent ml-1 drop-shadow-[1px_1px_0_rgba(15,15,15,1)]">AI</span>
+        <span className="text-brand-dark">tagg</span>
+        <span className="text-brand-accent text-4xl leading-none -mt-2 ml-0.5">.</span>
       </div>
     </header>
   );

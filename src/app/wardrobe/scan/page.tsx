@@ -97,94 +97,118 @@ export default function ScanPage() {
 
   if (scannedData && image) {
     return (
-      <div className="flex flex-col min-h-[100dvh] px-6 py-6 pb-32 overflow-y-auto">
-        <div className="flex justify-between items-center mb-6 mt-4">
-          <h1 className="font-serif text-3xl font-bold text-brand-dark">
-            {uploadQueue.length > 0 ? `Review (${uploadQueue.length + 1} left)` : 'Review Item'}
-          </h1>
-          <button onClick={() => { 
-            if (uploadQueue.length > 0) {
-              const next = uploadQueue[0];
-              setUploadQueue(prev => prev.slice(1));
-              setImage(next);
-              setScannedData(null);
-              processImage(next);
-            } else {
-              setImage(null); 
-              setScannedData(null); 
-            }
-          }} className="p-2 bg-neutral-100 rounded-full">
-            <X className="w-6 h-6 text-neutral-500" />
-          </button>
-        </div>
-
-        <div className="rounded-2xl overflow-hidden aspect-[3/4] mb-6 shadow-md border border-neutral-100">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt="Scanned clothing" className="w-full h-full object-cover" />
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Type</label>
-            <input 
-              type="text" 
-              value={scannedData.type} 
-              onChange={(e) => updateScannedData('type', e.target.value)}
-              className="w-full text-xl border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-dark bg-transparent font-medium capitalize"
-            />
+      <div className="flex flex-col md:flex-row gap-8 min-h-[100dvh] pb-32 pt-4 w-full max-w-5xl mx-auto">
+        
+        {/* Left Side: Image */}
+        <div className="w-full md:w-1/2 flex flex-col">
+          <div className="flex justify-between items-center mb-6 md:hidden">
+            <h1 className="font-serif text-3xl font-bold text-brand-dark">
+              {uploadQueue.length > 0 ? `Review (${uploadQueue.length + 1} left)` : 'Review Item'}
+            </h1>
+            <button onClick={() => { 
+              if (uploadQueue.length > 0) {
+                const next = uploadQueue[0];
+                setUploadQueue(prev => prev.slice(1));
+                setImage(next);
+                setScannedData(null);
+                processImage(next);
+              } else {
+                setImage(null); 
+                setScannedData(null); 
+              }
+            }} className="p-2 bg-neutral-100 rounded-full">
+              <X className="w-6 h-6 text-neutral-500" />
+            </button>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Color</label>
-              <input 
-                type="text" 
-                value={scannedData.color} 
-                onChange={(e) => updateScannedData('color', e.target.value)}
-                className="w-full text-lg border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-dark bg-transparent capitalize"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Category</label>
-              <input 
-                type="text" 
-                value={scannedData.category} 
-                onChange={(e) => updateScannedData('category', e.target.value)}
-                className="w-full text-lg border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-dark bg-transparent capitalize"
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Style</label>
-              <input 
-                type="text" 
-                value={scannedData.style} 
-                onChange={(e) => updateScannedData('style', e.target.value)}
-                className="w-full text-lg border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-dark bg-transparent capitalize"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Fit</label>
-              <input 
-                type="text" 
-                value={scannedData.fit} 
-                onChange={(e) => updateScannedData('fit', e.target.value)}
-                className="w-full text-lg border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-dark bg-transparent capitalize"
-              />
-            </div>
+          <div className="rounded-3xl overflow-hidden aspect-[3/4] w-full neo-border neo-shadow bg-neutral-100 sticky top-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={image} alt="Scanned clothing" className="w-full h-full object-cover" />
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 p-6 flex justify-center bg-gradient-to-t from-background via-background to-transparent pointer-events-none z-50">
-          <div className="max-w-md w-full pointer-events-auto">
+        {/* Right Side: Form */}
+        <div className="w-full md:w-1/2 flex flex-col md:py-8">
+          <div className="hidden md:flex justify-between items-center mb-10">
+            <h1 className="font-serif text-4xl font-bold text-brand-dark">
+              {uploadQueue.length > 0 ? `Review (${uploadQueue.length + 1} left)` : 'Review Item'}
+            </h1>
+            <button onClick={() => { 
+              if (uploadQueue.length > 0) {
+                const next = uploadQueue[0];
+                setUploadQueue(prev => prev.slice(1));
+                setImage(next);
+                setScannedData(null);
+                processImage(next);
+              } else {
+                setImage(null); 
+                setScannedData(null); 
+              }
+            }} className="p-2 bg-neutral-100 rounded-full hover:bg-neutral-200 transition-colors">
+              <X className="w-6 h-6 text-neutral-500" />
+            </button>
+          </div>
+
+          <div className="space-y-6 flex-1 mt-6 md:mt-0">
+            <div>
+              <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Type</label>
+              <input 
+                type="text" 
+                value={scannedData.type} 
+                onChange={(e) => updateScannedData('type', e.target.value)}
+                className="w-full text-2xl border-b-4 border-neutral-200 py-3 focus:outline-none focus:border-brand-accent bg-transparent font-bold capitalize text-brand-dark transition-colors"
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Color</label>
+                <input 
+                  type="text" 
+                  value={scannedData.color} 
+                  onChange={(e) => updateScannedData('color', e.target.value)}
+                  className="w-full text-xl border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-accent bg-transparent capitalize font-medium transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Category</label>
+                <input 
+                  type="text" 
+                  value={scannedData.category} 
+                  onChange={(e) => updateScannedData('category', e.target.value)}
+                  className="w-full text-xl border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-accent bg-transparent capitalize font-medium transition-colors"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Style</label>
+                <input 
+                  type="text" 
+                  value={scannedData.style} 
+                  onChange={(e) => updateScannedData('style', e.target.value)}
+                  className="w-full text-xl border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-accent bg-transparent capitalize font-medium transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Fit</label>
+                <input 
+                  type="text" 
+                  value={scannedData.fit} 
+                  onChange={(e) => updateScannedData('fit', e.target.value)}
+                  className="w-full text-xl border-b-2 border-neutral-200 py-2 focus:outline-none focus:border-brand-accent bg-transparent capitalize font-medium transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 mb-4">
             <button
               onClick={handleSave}
-              className="w-full bg-brand-dark text-brand-light rounded-full py-4 text-lg font-medium flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors shadow-xl"
+              className="w-full bg-brand-dark text-brand-light neo-border neo-shadow rounded-full py-4 text-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all"
             >
               Add to Wardrobe
-              <Check className="w-5 h-5" />
+              <Check className="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -193,42 +217,45 @@ export default function ScanPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-black">
+    <div className="fixed inset-0 bg-black z-50 flex flex-col">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-50">
-        <button onClick={() => router.back()} className="w-10 h-10 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white">
+      <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-40">
+        <button onClick={() => router.back()} className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/10 hover:bg-black/60 transition-colors">
           <X className="w-6 h-6" />
         </button>
       </div>
 
       {/* Camera / Loading Area */}
-      <div className="flex-1 relative overflow-hidden flex items-center justify-center">
+      <div className="flex-1 relative w-full h-full">
         {!image ? (
           <Webcam
             audio={false}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
             videoConstraints={{ facingMode: "environment" }}
-            className="w-full h-full object-cover absolute inset-0"
+            className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full absolute inset-0">
+          <div className="w-full h-full absolute inset-0 bg-black">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={image} alt="Captured" className="w-full h-full object-cover blur-sm brightness-50" />
+            <img src={image} alt="Captured" className="w-full h-full object-cover blur-md brightness-[0.3]" />
             
             {/* Scanning Overlay */}
             {isScanning && (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <motion.div 
-                  className="w-64 h-64 border-2 border-brand-accent rounded-3xl relative overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  className="w-48 h-48 border-2 border-brand-accent rounded-full relative overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
                 >
                   <motion.div 
-                    className="absolute top-0 left-0 right-0 h-1 bg-brand-accent shadow-[0_0_15px_rgba(204,255,0,1)]"
-                    animate={{ top: ['0%', '100%', '0%'] }}
+                    className="absolute inset-0 bg-brand-accent/20"
+                    animate={{ top: ['100%', '-100%'] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                   />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Sparkles className="w-12 h-12 text-brand-accent" />
+                  </div>
                 </motion.div>
                 <motion.p 
                   className="text-white mt-8 font-medium tracking-wide text-lg"
@@ -244,28 +271,28 @@ export default function ScanPage() {
 
         {/* Framing Guides */}
         {!image && (
-          <div className="absolute inset-0 border-[40px] border-black/30 pointer-events-none">
-            <div className="w-full h-full border-2 border-white/30 rounded-3xl" />
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-8">
+            <div className="w-full max-w-sm aspect-[3/4] border-2 border-white/30 rounded-[3rem]" />
           </div>
         )}
       </div>
 
       {/* Controls */}
       {!image && (
-        <div className="h-32 bg-black flex items-center justify-around px-8 pb-8 pt-4 z-50">
-          <label className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors">
-            <ImageIcon className="w-5 h-5" />
+        <div className="absolute bottom-0 left-0 right-0 p-8 pb-12 flex items-center justify-center gap-12 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+          <label className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors border border-white/10">
+            <ImageIcon className="w-6 h-6" />
             <input type="file" multiple accept="image/*" className="hidden" onChange={handleFileUpload} />
           </label>
           
           <button 
             onClick={capture}
-            className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center p-1"
+            className="w-24 h-24 rounded-full border-[6px] border-white/80 flex items-center justify-center p-1 hover:scale-105 transition-transform"
           >
-            <div className="w-full h-full bg-white rounded-full hover:scale-95 transition-transform" />
+            <div className="w-full h-full bg-white rounded-full" />
           </button>
           
-          <div className="w-12 h-12" /> {/* Empty div for flex balance */}
+          <div className="w-14 h-14" /> {/* Empty div for flex balance */}
         </div>
       )}
     </div>

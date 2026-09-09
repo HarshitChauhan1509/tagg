@@ -22,7 +22,7 @@ export default function ProfilePage() {
           <User className="w-10 h-10 text-brand-dark" />
         </div>
         <h2 className="text-2xl font-bold text-brand-dark">{user.name}</h2>
-        <p className="text-neutral-500 font-medium mt-1">Fashion AI Member</p>
+        <p className="text-neutral-500 font-medium mt-1">tagg Member</p>
       </div>
 
       <div className="space-y-6">
