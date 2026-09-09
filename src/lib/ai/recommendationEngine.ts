@@ -35,6 +35,12 @@ function isColorCompatible(color1: string, color2: string): boolean {
   return true; 
 }
 
+// Helper to get random item
+function getRandom<T>(array: T[]): T | undefined {
+  if (array.length === 0) return undefined;
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 export function generateRecommendation(
   wardrobe: ClothingItem[],
   occasion: Occasion,
@@ -73,25 +79,29 @@ export function generateRecommendation(
   // If we don't have basic items, just return null
   if (tops.length === 0 || bottoms.length === 0) return null;
 
-  // Find the best top based on formality
-  const selectedTop = tops.find(t => t.formality >= targetFormality.min && t.formality <= targetFormality.max) || tops[0];
+  // Find valid tops
+  const validTops = tops.filter(t => t.formality >= targetFormality.min && t.formality <= targetFormality.max);
+  const selectedTop = getRandom(validTops.length > 0 ? validTops : tops)!;
   
-  // Find a compatible bottom
-  const selectedBottom = bottoms.find(b => 
+  // Find valid bottoms
+  const validBottoms = bottoms.filter(b => 
     (b.formality >= targetFormality.min && b.formality <= targetFormality.max) && 
     isColorCompatible(selectedTop.color, b.color)
-  ) || bottoms[0];
+  );
+  const selectedBottom = getRandom(validBottoms.length > 0 ? validBottoms : bottoms)!;
 
-  // Optional: Outerwear (only if occasion is night_out, dinner, date, or event, or if it fits)
+  // Optional: Outerwear
   let selectedOuter: ClothingItem | undefined;
   if (outers.length > 0 && ['night_out', 'dinner', 'date', 'event'].includes(occasion)) {
-    selectedOuter = outers.find(o => isColorCompatible(o.color, selectedTop.color)) || outers[0];
+    const validOuters = outers.filter(o => isColorCompatible(o.color, selectedTop.color));
+    selectedOuter = getRandom(validOuters.length > 0 ? validOuters : outers);
   }
 
   // Shoes
   let selectedShoes: ClothingItem | undefined;
   if (shoes.length > 0) {
-    selectedShoes = shoes.find(s => s.formality >= targetFormality.min) || shoes[0];
+    const validShoes = shoes.filter(s => s.formality >= targetFormality.min);
+    selectedShoes = getRandom(validShoes.length > 0 ? validShoes : shoes);
   }
 
   // Generate Reasoning dynamically based on the AI metadata
