@@ -17,58 +17,24 @@ export default function ScanPage() {
   const [scanMessage, setScanMessage] = useState("Initializing AI model...");
   const [scannedData, setScannedData] = useState<Partial<ClothingItem> | null>(null);
   const [uploadQueue, setUploadQueue] = useState<string[]>([]);
-  const workerRef = useRef<Worker | null>(null);
   const webcamRef = useRef<Webcam>(null);
 
-  // Initialize Web Worker
-  useEffect(() => {
-    // Create the worker
-    const w = new Worker(new URL('./worker.ts', import.meta.url), {
-      type: 'module'
-    });
-
-    w.addEventListener('message', (e) => {
-      const { status, message, result, error, progress } = e.data;
-      if (status === 'progress_msg') {
-        setScanMessage(message);
-      } else if (status === 'progress') {
-        if (progress.status === 'progress') {
-          setScanMessage(`Downloading AI... ${progress.progress ? Math.round(progress.progress) : 0}%`);
-        } else if (progress.status === 'ready') {
-          setScanMessage("AI model ready!");
-        } else if (progress.status === 'initiate') {
-          setScanMessage("Initializing AI weights...");
-        }
-      } else if (status === 'complete') {
-        setScannedData(result);
-        setIsScanning(false);
-      } else if (status === 'error') {
-        console.error("AI Error:", error);
-        setScanMessage("Analysis failed. Please try again.");
-        setIsScanning(false);
-      }
-    });
-
-    w.addEventListener('error', (e) => {
-      console.error("Worker Global Error:", e);
-      setScanMessage("Worker crashed. Check console.");
-      setIsScanning(false);
-    });
-
-    workerRef.current = w;
-
-    return () => {
-      w.terminate();
-    };
-  }, []);
-
-  const processImage = (base64Img: string) => {
+  const processImage = async (base64Img: string) => {
     setIsScanning(true);
     setScanMessage("Waking up AI...");
-    if (workerRef.current) {
-      workerRef.current.postMessage({ imageBase64: base64Img });
-    } else {
-      setScanMessage("AI Worker not initialized. Please refresh.");
+    
+    try {
+      const { analyzeImage } = await import('@/lib/ai/clientPipeline');
+      const result = await analyzeImage(base64Img, (msg) => {
+        setScanMessage(msg);
+      });
+      
+      setScannedData(result);
+    } catch (error) {
+      console.error("Analysis Error:", error);
+      setScanMessage("Analysis failed. Please try again.");
+    } finally {
+      setIsScanning(false);
     }
   };
 
