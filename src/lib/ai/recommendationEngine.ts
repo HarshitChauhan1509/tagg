@@ -44,11 +44,31 @@ export function generateRecommendation(
 
   const targetFormality = OCCASION_FORMALITY[occasion];
   
-  // Filter items by category
-  const tops = wardrobe.filter(i => i.category === 'top');
-  const bottoms = wardrobe.filter(i => i.category === 'bottom');
-  const shoes = wardrobe.filter(i => i.category === 'shoes');
-  const outers = wardrobe.filter(i => i.category === 'outerwear' || i.type === 'blazer' || i.type === 'jacket');
+  // Make filtering robust. Users might type "pants" as category instead of "bottom", or "tshirt" instead of "top".
+  const tops = wardrobe.filter(i => 
+    i.category.toLowerCase() === 'top' || 
+    i.category.toLowerCase() === 'tshirt' ||
+    i.category.toLowerCase() === 'shirt' ||
+    ['t-shirt', 'shirt', 'sweater', 'hoodie', 'top', 'blouse'].includes(i.type.toLowerCase())
+  );
+  
+  const bottoms = wardrobe.filter(i => 
+    i.category.toLowerCase() === 'bottom' || 
+    i.category.toLowerCase() === 'pants' ||
+    i.category.toLowerCase() === 'jeans' ||
+    ['jeans', 'trousers', 'shorts', 'skirt', 'pants', 'bottom'].includes(i.type.toLowerCase())
+  );
+  
+  const shoes = wardrobe.filter(i => 
+    i.category.toLowerCase() === 'shoes' || 
+    ['sneakers', 'boots', 'heels', 'shoes', 'loafers'].includes(i.type.toLowerCase())
+  );
+  
+  const outers = wardrobe.filter(i => 
+    i.category.toLowerCase() === 'outerwear' || 
+    i.category.toLowerCase() === 'jacket' ||
+    ['blazer', 'jacket', 'coat', 'outerwear'].includes(i.type.toLowerCase())
+  );
 
   // If we don't have basic items, just return null
   if (tops.length === 0 || bottoms.length === 0) return null;
