@@ -22,7 +22,7 @@ export default function ScanPage() {
   // Initialize Web Worker
   useEffect(() => {
     // Create the worker
-    const w = new Worker(new URL('../../../lib/ai/worker.ts', import.meta.url), {
+    const w = new Worker(new URL('./worker.ts', import.meta.url), {
       type: 'module'
     });
 
