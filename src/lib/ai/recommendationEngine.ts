@@ -83,25 +83,42 @@ export function generateRecommendation(
   const validTops = tops.filter(t => t.formality >= targetFormality.min && t.formality <= targetFormality.max);
   const selectedTop = getRandom(validTops.length > 0 ? validTops : tops)!;
   
-  // Find valid bottoms
+  // Find valid bottoms (ensure not the same physical item as top)
   const validBottoms = bottoms.filter(b => 
+    b.id !== selectedTop.id &&
     (b.formality >= targetFormality.min && b.formality <= targetFormality.max) && 
     isColorCompatible(selectedTop.color, b.color)
   );
-  const selectedBottom = getRandom(validBottoms.length > 0 ? validBottoms : bottoms)!;
+  const fallbackBottoms = bottoms.filter(b => b.id !== selectedTop.id);
+  const selectedBottom = getRandom(validBottoms.length > 0 ? validBottoms : fallbackBottoms)!;
 
   // Optional: Outerwear
   let selectedOuter: ClothingItem | undefined;
   if (outers.length > 0 && ['night_out', 'dinner', 'date', 'event'].includes(occasion)) {
-    const validOuters = outers.filter(o => isColorCompatible(o.color, selectedTop.color));
-    selectedOuter = getRandom(validOuters.length > 0 ? validOuters : outers);
+    const validOuters = outers.filter(o => 
+      o.id !== selectedTop.id && 
+      o.id !== selectedBottom?.id && 
+      isColorCompatible(o.color, selectedTop.color)
+    );
+    const fallbackOuters = outers.filter(o => o.id !== selectedTop.id && o.id !== selectedBottom?.id);
+    selectedOuter = getRandom(validOuters.length > 0 ? validOuters : fallbackOuters);
   }
 
   // Shoes
   let selectedShoes: ClothingItem | undefined;
   if (shoes.length > 0) {
-    const validShoes = shoes.filter(s => s.formality >= targetFormality.min);
-    selectedShoes = getRandom(validShoes.length > 0 ? validShoes : shoes);
+    const validShoes = shoes.filter(s => 
+      s.id !== selectedTop.id && 
+      s.id !== selectedBottom?.id && 
+      s.id !== selectedOuter?.id && 
+      s.formality >= targetFormality.min
+    );
+    const fallbackShoes = shoes.filter(s => 
+      s.id !== selectedTop.id && 
+      s.id !== selectedBottom?.id && 
+      s.id !== selectedOuter?.id
+    );
+    selectedShoes = getRandom(validShoes.length > 0 ? validShoes : fallbackShoes);
   }
 
   // Generate Reasoning dynamically based on the AI metadata

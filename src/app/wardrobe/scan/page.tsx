@@ -69,6 +69,8 @@ export default function ScanPage() {
   };
 
   const handleSave = () => {
+    if (isScanning) return; // Prevent double clicks
+    
     if (image && scannedData && user) {
       addClothingItem({
         ...scannedData,
@@ -205,9 +207,10 @@ export default function ScanPage() {
           <div className="mt-12 mb-4">
             <button
               onClick={handleSave}
-              className="w-full bg-brand-dark text-brand-light neo-border neo-shadow rounded-full py-4 text-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all"
+              disabled={isScanning}
+              className="w-full bg-brand-dark text-brand-light neo-border neo-shadow rounded-full py-4 text-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Add to Wardrobe
+              {isScanning ? 'Processing...' : 'Add to Wardrobe'}
               <Check className="w-6 h-6" />
             </button>
           </div>
