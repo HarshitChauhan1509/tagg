@@ -2,21 +2,40 @@ import { create } from 'zustand';
 import { persist, StateStorage, createJSONStorage } from 'zustand/middleware';
 import localforage from 'localforage';
 
-localforage.config({
-  name: 'fashion-ai-mvp',
-  storeName: 'wardrobe_db',
-});
+// Only configure localforage on the client
+if (typeof window !== 'undefined') {
+  localforage.config({
+    name: 'fashion-ai-mvp',
+    storeName: 'wardrobe_db',
+  });
+}
 
 // Create a custom storage adapter for Zustand using localforage
 const storage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    return (await localforage.getItem(name)) || null;
+    if (typeof window === 'undefined') return null;
+    try {
+      return (await localforage.getItem(name)) || null;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   },
   setItem: async (name: string, value: string): Promise<void> => {
-    await localforage.setItem(name, value);
+    if (typeof window === 'undefined') return;
+    try {
+      await localforage.setItem(name, value);
+    } catch (e) {
+      console.error(e);
+    }
   },
   removeItem: async (name: string): Promise<void> => {
-    await localforage.removeItem(name);
+    if (typeof window === 'undefined') return;
+    try {
+      await localforage.removeItem(name);
+    } catch (e) {
+      console.error(e);
+    }
   },
 };
 

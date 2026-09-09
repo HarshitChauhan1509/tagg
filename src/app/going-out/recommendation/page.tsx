@@ -3,11 +3,11 @@
 import { useAppStore, Occasion } from "@/lib/store";
 import { generateRecommendation } from "@/lib/ai/recommendationEngine";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Sparkles, RefreshCcw } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
-export default function RecommendationPage() {
+function RecommendationContent() {
   const searchParams = useSearchParams();
   const occasion = searchParams.get('occasion') as Occasion;
   const router = useRouter();
@@ -79,7 +79,7 @@ export default function RecommendationPage() {
           <ArrowLeft className="w-6 h-6" />
         </button>
         <h1 className="font-serif text-2xl font-bold text-brand-dark tracking-tight">
-          Tonight's Look
+          Tonight&apos;s Look
         </h1>
       </div>
 
@@ -121,9 +121,22 @@ export default function RecommendationPage() {
           <Sparkles className="w-4 h-4" /> Why it works
         </h3>
         <p className="text-lg leading-relaxed text-brand-light/90 relative z-10 font-serif">
-          "{recommendation.reasoning}"
+          &quot;{recommendation.reasoning}&quot;
         </p>
       </motion.div>
     </div>
+  );
+}
+
+export default function RecommendationPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col min-h-screen items-center justify-center px-6 text-center">
+        <Sparkles className="w-12 h-12 text-brand-dark mb-6 animate-spin" />
+        <h2 className="text-2xl font-serif font-bold text-brand-dark mb-2">Loading...</h2>
+      </div>
+    }>
+      <RecommendationContent />
+    </Suspense>
   );
 }

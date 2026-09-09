@@ -7,16 +7,9 @@
   --foreground: #0F0F0F; /* Stark black */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0F0F0F;
-    --foreground: #F7F7F5;
-  }
-}
-
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: #E5E5E5; /* Darker gray for the desktop background outside the app */
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -24,15 +17,9 @@ body {
 
 /* Custom Utilities */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-@media (prefers-color-scheme: dark) {
-  .glass {
-    background: rgba(15, 15, 15, 0.7);
-  }
+  background: rgba(247, 247, 245, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -41,4 +28,13 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Partiful / Pickle playful elements */
+.neo-shadow {
+  box-shadow: 4px 4px 0px 0px #0F0F0F;
+}
+
+.neo-border {
+  border: 2px solid #0F0F0F;
 }

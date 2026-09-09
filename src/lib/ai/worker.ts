@@ -12,7 +12,7 @@ class PipelineSingleton {
 
     static async getInstance(progress_callback?: Function) {
         if (this.instance === null) {
-            this.instance = await pipeline(this.task, this.model, { progress_callback });
+            this.instance = await pipeline(this.task as any, this.model, { progress_callback });
         }
         return this.instance;
     }
@@ -31,7 +31,7 @@ self.addEventListener('message', async (event) => {
         const { imageBase64 } = event.data;
 
         // Initialize pipeline
-        let classifier = await PipelineSingleton.getInstance((x: any) => {
+        const classifier = await PipelineSingleton.getInstance((x: any) => {
             // We can send progress back to main thread if needed
             self.postMessage({ status: 'progress', progress: x });
         });

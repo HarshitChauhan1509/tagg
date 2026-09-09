@@ -39,27 +39,27 @@ export default function GoingOutPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.05 }}
               onClick={() => setSelected(occ.id)}
-              className={`flex items-center gap-4 px-6 py-4 rounded-2xl border-2 text-left transition-all ${
+              className={`flex items-center gap-4 px-6 py-4 rounded-2xl neo-border transition-all ${
                 selected === occ.id 
-                  ? 'border-brand-dark bg-brand-dark text-white shadow-lg scale-[1.02]' 
-                  : 'border-neutral-100 bg-white hover:border-neutral-300'
+                  ? 'bg-brand-accent text-brand-dark neo-shadow translate-y-[-2px]' 
+                  : 'bg-white hover:bg-neutral-50'
               }`}
             >
-              <span className="text-2xl">{occ.emoji}</span>
-              <span className="font-medium text-lg">{occ.label}</span>
+              <span className="text-3xl">{occ.emoji}</span>
+              <span className="font-bold text-xl">{occ.label}</span>
             </motion.button>
           ))}
         </div>
       </motion.div>
 
-      <div className="mt-12 w-full pb-10">
+      <div className="mt-12 w-full pb-10 relative">
         <button
           disabled={!selected}
           onClick={() => router.push(`/going-out/recommendation?occasion=${selected}`)}
-          className="w-full bg-brand-accent text-brand-dark rounded-full py-4 text-lg font-bold flex items-center justify-center gap-2 hover:bg-[#b3e600] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_30px_rgba(204,255,0,0.3)]"
+          className="w-full bg-brand-dark text-brand-light neo-border neo-shadow rounded-full py-4 text-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Generate Outfit
-          <ArrowRight className="w-5 h-5" />
+          <ArrowRight className="w-6 h-6" />
         </button>
       </div>
     </div>

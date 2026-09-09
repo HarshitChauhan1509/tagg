@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { Navigation } from "@/components/Navigation";
 import "./globals.css";
@@ -9,7 +9,13 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfa
 export const metadata: Metadata = {
   title: "Fashion AI | What are you wearing tonight?",
   description: "Your wardrobe, understood by AI.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0", // Mobile friendly
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -19,10 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
-        <main className="min-h-screen max-w-md mx-auto relative overflow-hidden bg-background shadow-2xl flex flex-col">
+      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased min-h-screen flex items-center justify-center p-0 md:p-4`}>
+        <main className="w-full h-[100dvh] md:h-[90vh] md:max-h-[900px] max-w-md mx-auto relative overflow-hidden bg-background md:rounded-[3rem] md:neo-border md:neo-shadow flex flex-col shadow-2xl">
           <Navigation />
-          <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
+          <div className="flex-1 overflow-y-auto no-scrollbar pb-24 relative">
             {children}
           </div>
         </main>

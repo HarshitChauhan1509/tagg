@@ -4,12 +4,19 @@ import { useAppStore } from "@/lib/store";
 import { User, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { useEffect, useState } from "react";
+
 export function Navigation() {
   const user = useAppStore((state) => state.user);
   const logout = useAppStore((state) => state.logout);
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
-  if (!user) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !user) return null;
 
   return (
     <header className="px-6 py-4 flex items-center justify-between sticky top-0 bg-background/80 glass z-40">

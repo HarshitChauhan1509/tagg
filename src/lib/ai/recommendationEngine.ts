@@ -54,10 +54,10 @@ export function generateRecommendation(
   if (tops.length === 0 || bottoms.length === 0) return null;
 
   // Find the best top based on formality
-  let selectedTop = tops.find(t => t.formality >= targetFormality.min && t.formality <= targetFormality.max) || tops[0];
+  const selectedTop = tops.find(t => t.formality >= targetFormality.min && t.formality <= targetFormality.max) || tops[0];
   
   // Find a compatible bottom
-  let selectedBottom = bottoms.find(b => 
+  const selectedBottom = bottoms.find(b => 
     (b.formality >= targetFormality.min && b.formality <= targetFormality.max) && 
     isColorCompatible(selectedTop.color, b.color)
   ) || bottoms[0];

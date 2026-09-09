@@ -3,21 +3,26 @@
 import { useAppStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   const user = useAppStore((state) => state.user);
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // If already logged in, redirect to wardrobe
   useEffect(() => {
-    if (user) {
+    if (mounted && user) {
       router.push("/wardrobe");
     }
-  }, [user, router]);
+  }, [mounted, user, router]);
 
-  if (user) return null; // Avoid flicker
+  if (!mounted || user) return null; // Avoid flicker and hydration mismatch
 
   return (
     <div className="flex flex-col min-h-screen px-6 py-12 justify-between">
@@ -43,10 +48,10 @@ export default function Home() {
       >
         <button 
           onClick={() => router.push("/signup")}
-          className="w-full bg-brand-dark text-white rounded-full py-4 text-lg font-medium flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors"
+          className="w-full bg-brand-accent text-brand-dark neo-border neo-shadow rounded-full py-4 text-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F0F0F] transition-all"
         >
           Get Started
-          <ArrowRight className="w-5 h-5" />
+          <ArrowRight className="w-6 h-6" />
         </button>
       </motion.div>
     </div>
