@@ -1,47 +1,49 @@
-# Fashion AI MVP
+# tagg | What are you wearing tonight?
 
-> **"What are you wearing tonight?"**
 > Your wardrobe, understood by AI.
 
-A fully functional, zero-cost, camera-first fashion MVP. Built as an assignment for a CTO / Technical Co-Founder role, prioritizing modern UI/UX, Edge AI, and a believable product experience.
+A mobile-first, AI-powered digital wardrobe application. **tagg** allows users to seamlessly digitize their closet using their phone's camera. By leveraging on-device Edge AI, the application automatically categorizes, tags, and extracts rich metadata from clothing items. With a built-in intelligent recommendation engine, tagg generates styled outfits tailored to specific occasions, personal aesthetics, and color harmony.
 
-## 🚀 The Product Loop
+## ✨ Core Features
 
-1. **Sign Up**: Create a profile and define your aesthetic.
-2. **Camera-First Wardrobe**: Scan your clothes using your phone's camera.
-3. **Edge AI Analysis**: The app automatically identifies the clothing type, color, fit, and style using a zero-shot vision model.
-4. **Digital Wardrobe**: View your completely digitized closet.
-5. **"I'm going out tonight"**: Choose an occasion (Dinner, Date, Night Out, etc.).
-6. **Outfit Recommendation**: Receive a styled outfit composed *only* of clothes you actually own, complete with AI reasoning.
+1. **Camera-First Wardrobe**: Scan your clothes directly using your phone's camera with a seamless, immersive UI.
+2. **Edge AI Analysis**: The app automatically identifies clothing type, color, fit, formality, and style using a zero-shot vision model running directly on the device.
+3. **Direct Styling**: Scan a new item and immediately generate a complete outfit anchored around that specific piece.
+4. **Digital Closet**: View, manage, and filter your completely digitized wardrobe.
+5. **Occasion-Based Styling**: Choose an occasion (Dinner, Date, Night Out, Casual, etc.) and receive a styled outfit composed *only* of clothes you actually own.
+6. **AI Reasoning**: Outfits are accompanied by AI-generated reasoning explaining why the pieces work together.
 
-## 🧠 Technical Architecture
+## 🏗 Technical Architecture
 
-This MVP was built under a strict **₹0 / $0 Budget Constraint** while remaining fully functional.
+tagg is built with a focus on privacy, edge computing, and modern UX.
 
-### 1. Zero-Cost Edge AI (Vision)
-Instead of relying on paid cloud APIs (like OpenAI Vision or Google Cloud Vision), this app uses **WebAssembly (WASM)** to run Machine Learning models directly in the user's browser.
+### 1. Privacy-First Edge AI (Vision)
+Instead of relying on cloud APIs, tagg uses **WebAssembly (WASM)** to run Machine Learning models directly in the user's browser.
 - **Model**: `Xenova/clip-vit-base-patch32` via Hugging Face.
-- **Implementation**: Runs in a background Web Worker (`src/lib/ai/worker.ts`) using `@xenova/transformers`.
-- **Why**: Guarantees $0 cloud inference costs, offers zero-latency after initial load, and ensures 100% user privacy (images never leave the device).
+- **Implementation**: Runs dynamically on the client using `@xenova/transformers`.
+- **Why**: Offers zero-latency inference after the initial load and ensures **100% user privacy** (camera streams and images never leave the user's device).
 
-### 2. Zero-Cost Local Persistence
-To avoid paid databases or complicated auth setup for a simple MVP demo:
+### 2. Local-First Persistence
 - **State Management**: `zustand`
 - **Storage**: `localforage` (IndexedDB)
-- **Why**: Bypasses the 5MB `localStorage` limit allowing us to store base64 encoded images directly in the browser's IndexedDB. The app can be deployed as a static site and instantly works for any user without database provisioning.
+- **Why**: Bypasses traditional `localStorage` limits, allowing the application to securely store base64 encoded images and metadata directly in the browser's IndexedDB. This architecture allows the app to function flawlessly entirely offline or as a lightweight PWA.
 
 ### 3. Recommendation Engine
-The AI recommendation is handled by a deterministic algorithm (`recommendationEngine.ts`) that matches the extracted metadata (formality scores, color theory, and user aesthetic) to the chosen occasion. This keeps the MVP fast and reliable without hitting rate limits on free LLM APIs.
+The outfit generation is handled by a deterministic rules-based algorithm combined with AI-extracted metadata. It strictly enforces mutually exclusive slotting (e.g., ensuring a top is not simultaneously worn as outerwear) while matching formality scores, color theory, and user style preferences.
 
 ### 4. UI/UX Layer
 - **Framework**: Next.js 14 (App Router)
 - **Styling**: Tailwind CSS
 - **Animations**: Framer Motion
-- **Design Language**: Inspired by modern editorial apps (Phia, Partiful). Large organic shapes, a stark black/white/neon color palette, and a mobile-first layout.
+- **Design Language**: A bespoke "neo-brutalist" design system featuring high-contrast layouts, heavy borders, sharp shadows, and a mobile-first responsive grid.
 
-## 💻 Local Setup
+## 🚀 Local Setup
 
 1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd tagg
+   ```
 2. **Install dependencies**:
    ```bash
    npm install
@@ -52,27 +54,19 @@ The AI recommendation is handled by a deterministic algorithm (`recommendationEn
    ```
 4. **Open in browser**: Navigate to `http://localhost:3000`
 
-*Note: Since the AI runs in the browser, the first image scan will take a few seconds longer as it downloads the WASM model chunks. Subsequent scans are near-instant.*
+*Note: Since the AI runs locally in the browser, the first image scan will download the WASM model chunks (~120MB). Subsequent scans are instant and cached.*
 
-## 🌍 Free Deployment Instructions
+## 🌐 Deployment
 
-This app is 100% static/client-side and requires no server-side secrets or databases.
+This application is designed as a 100% static/client-side architecture and requires no server-side secrets or databases.
 
-**Option A: Vercel (Recommended)**
+**Vercel / Netlify / Cloudflare Pages**
 1. Push your code to GitHub.
-2. Import the project in Vercel.
-3. Deploy! (Works perfectly on the Free Hobby Tier).
+2. Import the project into your preferred hosting provider.
+3. Deploy! No environment variables are required.
 
-**Option B: Netlify / Cloudflare Pages**
-Works exactly the same way. No environment variables are required.
-
-## 🔒 Environment Variables
-**None required.** The app is designed to run entirely locally/at the edge to maintain the strict $0 cost requirement.
-
-## 🚧 Known Limitations & Future Improvements
-- **Model Size**: The CLIP model is ~120MB. While fine for a CTO demo, a production app would offload this to a cloud API (or use a much smaller quantized model) to reduce initial load times.
-- **Background Removal**: Images currently show the background. A future implementation could use a browser-based segmentation model (like `segment-anything`) to cut out the clothes beautifully.
-- **Algorithmic Fallback**: The outfit recommendation is currently algorithmic. In production, the stored wardrobe metadata would be injected into an LLM prompt (e.g., GPT-4o) for highly creative, personalized styling advice.
-
----
-*Developed as a Technical Co-Founder MVP.*
+## 🛣 Future Roadmap
+- **Background Segmentation**: Integrate a browser-based segmentation model (like `segment-anything`) to automatically remove backgrounds from clothing photos.
+- **Cloud AI Syncing**: Optional cloud sync utilizing advanced multimodal models (like GPT-4o Vision or Claude 3.5 Sonnet) for highly creative, conversational styling advice.
+- **React Native Migration**: Wrap the core PWA logic into a native Expo application for deeper OS camera integration and push notifications.
+- **Contextual APIs**: Integrate weather and calendar APIs to automatically suggest climate-appropriate outfits for upcoming events.
